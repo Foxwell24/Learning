@@ -60,7 +60,9 @@ void main()
 
             #endregion
 
-            ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(1, 1, Vector2.Zero));
+            ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(0.05f, 0.05f, new Vector2(0f, 0f)));
+            ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(0.05f, 0.05f, new Vector2(0.8f, 0.8f)));
+            ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(0.05f, 0.5f, new Vector2(-0.8f, 0.5f)));
 
             List<float> _vertices = new();
             List<uint> _indices = new();
@@ -166,7 +168,7 @@ void main()
 
             _gl.BindVertexArray(_vao);
             _gl.UseProgram(_program);
-            _gl.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, (void*)0);
+            _gl.DrawElements(PrimitiveType.Triangles, ShapeManager.Instance.NumberOfElementsForEBO, DrawElementsType.UnsignedInt, (void*)0);
         }
 
         private static void KeyDown(IKeyboard keyboard, Key key, int keyCode)

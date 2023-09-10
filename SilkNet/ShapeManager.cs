@@ -12,6 +12,8 @@ namespace SilkNet
 
         private List<ITriangleShape> _shapes = new();
 
+        public uint NumberOfElementsForEBO => (uint)_shapes.Count * 6u;
+
         public void AddTriangleShape(ITriangleShape shape) => _shapes.Add(shape);
 
         public void GetCombinedMesh(List<float> vertices, List<uint> indices)
