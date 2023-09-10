@@ -59,6 +59,19 @@ void main()
 
             #endregion
 
+            float[] vertices =
+            {
+                0.5f,  0.5f, 0.0f,
+                0.5f, -0.5f, 0.0f,
+               -0.5f, -0.5f, 0.0f,
+               -0.5f,  0.5f, 0.0f
+            };
+            uint[] indices =
+            {
+                0u, 1u, 3u,
+                1u, 2u, 3u
+            };
+
             #region Setup
             _gl = _window.CreateOpenGL();
             IInputContext input = _window.CreateInput();
@@ -80,9 +93,15 @@ void main()
             _vbo = _gl.GenBuffer();
             _gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
 
+            fixed (float* buf = vertices)
+                _gl.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(vertices.Length * sizeof(float)), buf, BufferUsageARB.StaticDraw);
+
             // Generate then bind "Element Buffer Object"
             _ebo = _gl.GenBuffer();
             _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _ebo);
+
+            fixed (uint* buf = indices)
+                _gl.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(indices.Length * sizeof(uint)), buf, BufferUsageARB.StaticDraw);
 
             #region shaders
 
@@ -137,25 +156,6 @@ void main()
             #endregion
 
             #endregion
-
-            float[] vertices =
-            {
-                0.5f,  0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-               -0.5f, -0.5f, 0.0f,
-               -0.5f,  0.5f, 0.0f
-            };
-
-            fixed (float* buf = vertices)
-            {
-                _gl.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(vertices.Length * sizeof(float)), buf, BufferUsageARB.StaticDraw);
-            }
-
-            uint[] indices =
-            {
-                0u, 1u, 3u,
-                1u, 2u, 3u
-            };
         }
 
         private static void Update(double deltaTime)
