@@ -3,7 +3,6 @@ using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using System.Drawing;
-using System.Numerics;
 
 namespace SilkNet
 {
@@ -139,21 +138,24 @@ void main()
 
             #endregion
 
-            ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(1, 1, Vector2.Zero));
-
-            List<float> _vertices = new();
-            List<uint> _indices = new();
-
-            ShapeManager.Instance.GetCombinedMesh(_vertices, _indices);
-
-            float[] vertices = _vertices.ToArray();
-            uint[] indices = _indices.ToArray();
+            float[] vertices =
+            {
+                0.5f,  0.5f, 0.0f,
+                0.5f, -0.5f, 0.0f,
+               -0.5f, -0.5f, 0.0f,
+               -0.5f,  0.5f, 0.0f
+            };
 
             fixed (float* buf = vertices)
             {
                 _gl.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(vertices.Length * sizeof(float)), buf, BufferUsageARB.StaticDraw);
             }
 
+            uint[] indices =
+            {
+                0u, 1u, 3u,
+                1u, 2u, 3u
+            };
         }
 
         private static void Update(double deltaTime)
