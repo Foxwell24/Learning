@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using SilkNet.Shapes;
 
 namespace SilkNet
 {
@@ -22,6 +24,11 @@ namespace SilkNet
             {
                 shape.CombineMesh(vertices, indices);
             }
+        }
+
+        public void ChangePosition(int indexOfShape, Vector2 position)
+        {
+            _shapes[indexOfShape].ChangePosition(position);
         }
     }
 }

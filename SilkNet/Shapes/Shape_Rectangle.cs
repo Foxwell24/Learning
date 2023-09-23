@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SilkNet
+namespace SilkNet.Shapes
 {
     internal class Shape_Rectangle : ITriangleShape
     {
@@ -19,10 +19,10 @@ namespace SilkNet
 
             verts = new float[]
             {
-                (0.5f * width) + position.X,  (0.5f * height) + position.Y,  0.0f,
-                (0.5f * width) + position.X,  (-0.5f * height) + position.Y, 0.0f,
-                (-0.5f * width) + position.X, (-0.5f * height) + position.Y, 0.0f,
-                (-0.5f * width) + position.X, (0.5f * height) + position.Y,  0.0f
+                0.5f * width + position.X,  0.5f * height + position.Y,  0.0f,
+                0.5f * width + position.X,  -0.5f * height + position.Y, 0.0f,
+                -0.5f * width + position.X, -0.5f * height + position.Y, 0.0f,
+                -0.5f * width + position.X, 0.5f * height + position.Y,  0.0f
             };
 
             ints = new uint[]
@@ -30,6 +30,11 @@ namespace SilkNet
                 0u, 1u, 3u,
                 1u, 2u, 3u
             };
+        }
+
+        public void ChangePosition(Vector2 position)
+        {
+            throw new NotImplementedException();
         }
 
         public void CombineMesh(List<float> vertices, List<uint> indices)

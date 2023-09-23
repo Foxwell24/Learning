@@ -2,6 +2,7 @@
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
+using SilkNet.Shapes;
 using System.Drawing;
 using System.Numerics;
 
@@ -9,6 +10,8 @@ namespace SilkNet
 {
     internal class Program
     {
+        public static readonly Vector2D<int> ScreenSize = new Vector2D<int>(1200, 800);
+
         private static uint _program;
         private static IWindow _window;
         private static GL _gl;
@@ -21,8 +24,8 @@ namespace SilkNet
         {
             WindowOptions options = WindowOptions.Default with
             {
-                Size = new Vector2D<int>(800, 600),
-                Title = "LEarning"
+                Size = ScreenSize,
+                Title = "Learning"
             };
 
             _window = Window.Create(options);
@@ -60,9 +63,11 @@ void main()
 
             #endregion
 
-            ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(0.05f, 0.05f, new Vector2(0f, 0f)));
-            ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(0.05f, 0.05f, new Vector2(0.8f, 0.8f)));
-            ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(0.05f, 0.5f, new Vector2(-0.8f, 0.5f)));
+            //ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(0.05f, 0.05f, new Vector2(0.9f, 0f)));
+            //ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(0.05f, 0.05f, new Vector2(0.8f, 0.8f)));
+            //ShapeManager.Instance.AddTriangleShape(new Shape_Rectangle(0.05f, 0.5f, new Vector2(-0.8f, 0.5f)));
+
+            ShapeManager.Instance.AddTriangleShape(new Shape_Triangle(new Vector2(-0.5f, -0.1f), new Vector2(-0.1f, 0.1f), new Vector2(0.5f, 0.5f), new Vector2(0f, 0f)));
 
             List<float> _vertices = new();
             List<uint> _indices = new();
@@ -158,16 +163,42 @@ void main()
             #endregion
         }
 
+        private static Vector2 _position = new Vector2(0, 0);
         private static void Update(double deltaTime)
         {
+            ShapeManager.Instance.ChangePosition(0, _position);
+            _position.X += (float)(0.1 * deltaTime);
+            _position.Y += (float)(0.1 * deltaTime);
+
+
+            Console.WriteLine(_position.ToString());
         }
 
         private static unsafe void Render(double deltaTime)
         {
             _gl.Clear(ClearBufferMask.ColorBufferBit);
 
+            List<float> _vertices = new();
+            List<uint> _indices = new();
+
+            ShapeManager.Instance.GetCombinedMesh(_vertices, _indices);
+
+            float[] vertices = _vertices.ToArray();
+            uint[] indices = _indices.ToArray();
+
             _gl.BindVertexArray(_vao);
             _gl.UseProgram(_program);
+
+            _vbo = _gl.GenBuffer();
+            _gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
+            fixed (float* buf = vertices)
+                _gl.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(vertices.Length * sizeof(float)), buf, BufferUsageARB.StaticDraw);
+
+            _ebo = _gl.GenBuffer();
+            _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _ebo);
+            fixed (uint* buf = indices)
+                _gl.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(indices.Length * sizeof(uint)), buf, BufferUsageARB.StaticDraw);
+
             _gl.DrawElements(PrimitiveType.Triangles, ShapeManager.Instance.NumberOfElementsForEBO, DrawElementsType.UnsignedInt, (void*)0);
         }
 

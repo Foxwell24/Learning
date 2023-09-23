@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VeldridStuff", "VeldridStuf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiApp1", "MauiApp1\MauiApp1.csproj", "{C7285CBB-C6E3-4A58-BF4F-A8AB1DD5108A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilkNet", "SilkNet\SilkNet.csproj", "{A9ACD1B9-E8FD-41B0-92F8-9AD7F5F9B676}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SilkNet", "SilkNet\SilkNet.csproj", "{A9ACD1B9-E8FD-41B0-92F8-9AD7F5F9B676}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learning_SFML", "Learning_SFML\Learning_SFML.csproj", "{228ED34F-C9BD-484D-8BC8-32B00C05DC05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{A9ACD1B9-E8FD-41B0-92F8-9AD7F5F9B676}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9ACD1B9-E8FD-41B0-92F8-9AD7F5F9B676}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9ACD1B9-E8FD-41B0-92F8-9AD7F5F9B676}.Release|Any CPU.Build.0 = Release|Any CPU
+		{228ED34F-C9BD-484D-8BC8-32B00C05DC05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{228ED34F-C9BD-484D-8BC8-32B00C05DC05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{228ED34F-C9BD-484D-8BC8-32B00C05DC05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{228ED34F-C9BD-484D-8BC8-32B00C05DC05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
