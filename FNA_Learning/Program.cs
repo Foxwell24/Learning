@@ -1,6 +1,7 @@
 ﻿using FNA_Learning.GameStuff;
 using FNA_Learning.Helpers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,12 +12,17 @@ namespace FNA_Learning
         public static readonly int Width = 1920;
         public static readonly int Height = 1080;
 
+        public static ContentManager ContentManager_ {  get; private set; }
+
         private SpriteBatch _batch;
 
         [STAThread]
         static void Main(string[] args)
         {
             // following this https://github.com/FNA-XNA/FNA/wiki/2b:-FNA-From-Scratch-Tutorial#your-first-game
+
+            new Input();
+            new Player();
 
             using (FNAGame game = new FNAGame())
             {
@@ -64,8 +70,8 @@ namespace FNA_Learning
 
             _batch = new SpriteBatch(GraphicsDevice);
 
-            World.Instance.LoadContent(Content);
-            
+            ContentManager_ = Content;
+            World.Instance.LoadContent();
 
             base.LoadContent();
         }

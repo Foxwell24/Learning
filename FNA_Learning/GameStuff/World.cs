@@ -13,26 +13,59 @@ namespace FNA_Learning.GameStuff
     {
         internal static readonly World Instance = new World();
 
-        private const int numGrid = 20;
-        Vector2 gridSize;
+        #region Events
+
+        public event EventHandler InitEvent;
+        public event EventHandler LoadContentEvent;
+
+        public event EventHandler<UpdateEventArgs> UpdateEvent;
+        public class UpdateEventArgs : EventArgs
+        {
+            public GameTime gameTime { get; set; }
+
+            public UpdateEventArgs(GameTime gameTime)
+            {
+                this.gameTime = gameTime;
+            }
+        }
+
+        public event EventHandler<DrawEventArgs> DrawEvent;
+        public class DrawEventArgs : EventArgs
+        {
+            public GameTime GameTime { get; set; }
+            public SpriteBatch spriteBatch { get; set; }
+
+            public DrawEventArgs(GameTime gameTime, SpriteBatch spriteBatch)
+            {
+                GameTime = gameTime;
+                this.spriteBatch = spriteBatch;
+            }
+        }
+
+        #endregion
+
+        List<GameObject> gameObjects = new();
+
+        private const int numGrid = 10;
+        int gridSize;
 
         Texture2D texture_grid;
 
-        internal void LoadContent(ContentManager content)
+        internal void LoadContent()
         {
-            texture_grid = content.Load<Texture2D>("WhiteSquare.png");
+            texture_grid = FNAGame.ContentManager_.Load<Texture2D>("WhiteSquare.png");
+            LoadContentEvent?.Invoke(this, null);
         }
 
         internal void Init()
         {
-            int smallest = (FNAGame.Height < FNAGame.Width)? FNAGame.Height : FNAGame.Width;
-
-            gridSize = new Vector2(smallest / numGrid, smallest / numGrid);
+            gridSize = ((FNAGame.Height < FNAGame.Width)? FNAGame.Height : FNAGame.Width) / numGrid;
+            InitEvent?.Invoke(this, null);
         }
 
         internal void Update(GameTime gameTime)
         {
-
+            UpdateEvent?.Invoke(this, new UpdateEventArgs(gameTime));
         }
 
         internal void Draw(GameTime gameTime, SpriteBatch batch)
@@ -41,8 +74,26 @@ namespace FNA_Learning.GameStuff
             {
                 for (int x = 0; x < numGrid; x++)
                 {
-                    batch.Draw(texture_grid, new Rectangle(x * (int)gridSize.X, y * (int)gridSize.Y, (int)gridSize.X - 1, (int)gridSize.Y - 1), Color.LightGray);
+                    batch.Draw(texture_grid, new Rectangle(x * gridSize, y * gridSize, gridSize - 1, gridSize - 1), Color.LightGray);
                 }
+            }
+
+            DrawEvent?.Invoke(this, new DrawEventArgs(gameTime, batch));
+        }
+
+        public void AddGameObject(GameObject gameObject)
+        {
+            lock (gameObjects)
+            {
+                gameObjects.Add(gameObject);
+            }
+        }
+
+        public void RemoveGameObject(GameObject gameObject)
+        {
+            lock(gameObjects)
+            {
+                gameObjects.Remove(gameObject);
             }
         }
     }

@@ -9,7 +9,9 @@ namespace FNA_Learning.Helpers
 {
     internal class Input
     {
-        internal static readonly Input Instance = new Input();
+        internal static Input Instance { get; private set; }
+
+        public Input() => Instance = this;
 
         private KeyboardState _keyboardPast = new();
         private MouseState _mousePast = Mouse.GetState();
