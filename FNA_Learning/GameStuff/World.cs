@@ -21,23 +21,23 @@ namespace FNA_Learning.GameStuff
         public event EventHandler<UpdateEventArgs> UpdateEvent;
         public class UpdateEventArgs : EventArgs
         {
-            public GameTime gameTime { get; set; }
+            public double deltaTime { get; set; }
 
-            public UpdateEventArgs(GameTime gameTime)
+            public UpdateEventArgs(double deltaTime)
             {
-                this.gameTime = gameTime;
+                this.deltaTime = deltaTime;
             }
         }
 
         public event EventHandler<DrawEventArgs> DrawEvent;
         public class DrawEventArgs : EventArgs
         {
-            public GameTime GameTime { get; set; }
+            public double deltaTime { get; set; }
             public SpriteBatch spriteBatch { get; set; }
 
-            public DrawEventArgs(GameTime gameTime, SpriteBatch spriteBatch)
+            public DrawEventArgs(double deltaTime, SpriteBatch spriteBatch)
             {
-                GameTime = gameTime;
+                this.deltaTime = deltaTime;
                 this.spriteBatch = spriteBatch;
             }
         }
@@ -47,7 +47,7 @@ namespace FNA_Learning.GameStuff
         List<GameObject> gameObjects = new();
 
         private const int numGrid = 10;
-        int gridSize;
+        public static int gridSize { get; private set; }
 
         Texture2D texture_grid;
 
@@ -63,12 +63,12 @@ namespace FNA_Learning.GameStuff
             InitEvent?.Invoke(this, null);
         }
 
-        internal void Update(GameTime gameTime)
+        internal void Update(double deltaTime)
         {
-            UpdateEvent?.Invoke(this, new UpdateEventArgs(gameTime));
+            UpdateEvent?.Invoke(this, new UpdateEventArgs(deltaTime));
         }
 
-        internal void Draw(GameTime gameTime, SpriteBatch batch)
+        internal void Draw(double deltaTime, SpriteBatch batch)
         {
             for (int y = 0; y < numGrid; y++)
             {
@@ -78,7 +78,7 @@ namespace FNA_Learning.GameStuff
                 }
             }
 
-            DrawEvent?.Invoke(this, new DrawEventArgs(gameTime, batch));
+            DrawEvent?.Invoke(this, new DrawEventArgs(deltaTime, batch));
         }
 
         public void AddGameObject(GameObject gameObject)

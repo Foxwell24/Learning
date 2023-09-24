@@ -87,7 +87,7 @@ namespace FNA_Learning
             // Run game logic in here. Do NOT render anything here!
 
             Input.Instance.Update();
-            World.Instance.Update(gameTime);
+            World.Instance.Update(gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
         }
@@ -98,7 +98,7 @@ namespace FNA_Learning
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _batch.Begin();
-            World.Instance.Draw(gameTime, _batch);
+            World.Instance.Draw(gameTime.ElapsedGameTime.TotalSeconds, _batch);
             _batch.End();
 
             base.Draw(gameTime);

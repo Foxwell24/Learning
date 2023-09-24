@@ -15,6 +15,7 @@ namespace FNA_Learning.GameStuff
         protected Color color = Color.Wheat;
         protected Vector2 position = new();
         protected Rectangle rectangle = new();
+        protected float scale = 1f;
 
         public GameObject()
         {
@@ -41,12 +42,12 @@ namespace FNA_Learning.GameStuff
 
         protected virtual void Draw(object? sender, World.DrawEventArgs e)
         {
-            e.spriteBatch.Draw(texture, position, rectangle, color);
+            e.spriteBatch.Draw(texture, position, rectangle, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
         }
 
         public virtual void Move(Vector2 movement)
         {
-            position += movement;
+            position += movement * World.gridSize;
         }
     }
 }
