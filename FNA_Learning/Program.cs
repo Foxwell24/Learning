@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FNA_Learning.Helpers;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace FNA_Learning
 {
@@ -13,7 +15,11 @@ namespace FNA_Learning
             {
                 game.Run();
             };
+
+            Console.ReadLine();
         }
+
+        Input input;
 
         private FNAGame()
         {
@@ -25,7 +31,7 @@ namespace FNA_Learning
 
             gManager.ApplyChanges();
 
-            Window.IsBorderlessEXT = true;
+            //Window.IsBorderlessEXT = true;
         }
 
         protected override void Initialize()
@@ -34,6 +40,19 @@ namespace FNA_Learning
              * loading configuration stuff in the constructor
              */
             base.Initialize();
+
+            input = new Input();
+
+            input.KeyPressed += (s, e) =>
+            {
+                Console.WriteLine($"{e.Key} Pressed");
+                if (e.Key == Keys.Escape)
+                    this.Exit();
+            };
+            input.MousePressed += (s, e) =>
+            {
+                Console.WriteLine($"{e.Button} Pressed");
+            };
         }
 
         protected override void LoadContent()
@@ -51,6 +70,9 @@ namespace FNA_Learning
         protected override void Update(GameTime gameTime)
         {
             // Run game logic in here. Do NOT render anything here!
+
+            input.Update();
+
             base.Update(gameTime);
         }
 
