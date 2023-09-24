@@ -11,15 +11,16 @@ namespace FNA_Learning
         {
             // following this https://github.com/FNA-XNA/FNA/wiki/2b:-FNA-From-Scratch-Tutorial#your-first-game
 
+            new Input();
             using (FNAGame game = new FNAGame())
             {
                 game.Run();
             };
 
-            Console.ReadLine();
+            Console.WriteLine("\n-------------------");
+            Console.WriteLine("Game closed, press any key to exit...");
+            Console.ReadKey();
         }
-
-        Input input;
 
         private FNAGame()
         {
@@ -39,20 +40,13 @@ namespace FNA_Learning
             /* This is a nice place to start up the engine, after
              * loading configuration stuff in the constructor
              */
+
+            Input.Instance.KeyDown += (_, a) =>
+            {
+                if (a.Key == Keys.Escape) Exit();
+            };
+
             base.Initialize();
-
-            input = new Input();
-
-            input.KeyPressed += (s, e) =>
-            {
-                Console.WriteLine($"{e.Key} Pressed");
-                if (e.Key == Keys.Escape)
-                    this.Exit();
-            };
-            input.MousePressed += (s, e) =>
-            {
-                Console.WriteLine($"{e.Button} Pressed");
-            };
         }
 
         protected override void LoadContent()
@@ -71,7 +65,7 @@ namespace FNA_Learning
         {
             // Run game logic in here. Do NOT render anything here!
 
-            input.Update();
+            Input.Instance.Update();
 
             base.Update(gameTime);
         }
