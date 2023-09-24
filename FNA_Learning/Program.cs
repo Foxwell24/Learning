@@ -1,17 +1,23 @@
-﻿using FNA_Learning.Helpers;
+﻿using FNA_Learning.GameStuff;
+using FNA_Learning.Helpers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace FNA_Learning
 {
     internal class FNAGame : Game
     {
+        public static readonly int Width = 1920;
+        public static readonly int Height = 1080;
+
+        private SpriteBatch _batch;
+
         [STAThread]
         static void Main(string[] args)
         {
             // following this https://github.com/FNA-XNA/FNA/wiki/2b:-FNA-From-Scratch-Tutorial#your-first-game
 
-            new Input();
             using (FNAGame game = new FNAGame())
             {
                 game.Run();
@@ -25,14 +31,15 @@ namespace FNA_Learning
         private FNAGame()
         {
             GraphicsDeviceManager gManager = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
 
-            gManager.PreferredBackBufferWidth = 1000;
-            gManager.PreferredBackBufferHeight = 800;
+            gManager.PreferredBackBufferWidth = Width;
+            gManager.PreferredBackBufferHeight = Height;
             gManager.IsFullScreen = false;
 
             gManager.ApplyChanges();
 
-            //Window.IsBorderlessEXT = true;
+            Window.IsBorderlessEXT = true;
         }
 
         protected override void Initialize()
@@ -46,12 +53,20 @@ namespace FNA_Learning
                 if (a.Key == Keys.Escape) Exit();
             };
 
+            World.Instance.Init();
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             // Load textures, sounds, and so on in here...
+
+            _batch = new SpriteBatch(GraphicsDevice);
+
+            World.Instance.LoadContent(Content);
+            
+
             base.LoadContent();
         }
 
@@ -66,6 +81,7 @@ namespace FNA_Learning
             // Run game logic in here. Do NOT render anything here!
 
             Input.Instance.Update();
+            World.Instance.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -74,6 +90,11 @@ namespace FNA_Learning
         {
             // Render stuff in here. Do NOT run game logic in here!
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            _batch.Begin();
+            World.Instance.Draw(gameTime, _batch);
+            _batch.End();
+
             base.Draw(gameTime);
         }
     }

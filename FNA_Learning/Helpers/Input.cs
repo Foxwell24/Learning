@@ -9,7 +9,7 @@ namespace FNA_Learning.Helpers
 {
     internal class Input
     {
-        public static Input Instance { get; private set; }
+        internal static readonly Input Instance = new Input();
 
         private KeyboardState _keyboardPast = new();
         private MouseState _mousePast = Mouse.GetState();
@@ -25,9 +25,7 @@ namespace FNA_Learning.Helpers
         public event EventHandler<MouseArgs> MouseUp;
         #endregion
 
-        public Input() => Instance = this;
-
-        public void Update()
+        internal void Update()
         {
             KeyboardState keyboardState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();

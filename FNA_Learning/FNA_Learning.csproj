@@ -11,6 +11,16 @@
     <ProjectReference Include="E:\Dev\FNA\FNA\FNA.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Content\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Content\WhiteSquare.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /y /d &quot;E:\Dev\FNA\ExternalDependencies\x64\*.dll&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
