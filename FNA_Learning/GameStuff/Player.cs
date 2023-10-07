@@ -1,4 +1,5 @@
-﻿using FNA_Learning.Helpers;
+﻿using FNA_Learning.GameStuff.Physics;
+using FNA_Learning.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Sources;
 
 namespace FNA_Learning.GameStuff
 {
@@ -14,24 +16,20 @@ namespace FNA_Learning.GameStuff
     {
         public static Player Instance { get; private set; }
 
+        private ColliderRect collider;
+
         Vector2 velocity;
-        double time = 0;
-        double elapsed = 0;
+        float speed = 300f;
 
         protected override void Init(object? sender, EventArgs e)
         {
             base.Init(sender, e);
 
-            Input.Instance.KeyDown += CalculateMovementInput;
-            Input.Instance.KeyPressed += (sender, e) =>
-            {
-                elapsed += time;
-                if (elapsed < 0.25) return;
-                CalculateMovementInput(sender, e);
-            };
+            World.Instance.DrawEvent_3 += Draw;
+
+            Input.Instance.KeyPressed += CalculateMovementInput;
 
             rectangle = new Rectangle(0, 0, 20, 20);
-            scale = 0.5f;
         }
 
         protected override void LoadContent(object? sender, EventArgs e)
@@ -39,10 +37,13 @@ namespace FNA_Learning.GameStuff
             base.LoadContent(sender, e);
 
             texture = FNAGame.ContentManager_.Load<Texture2D>("Player.png");
+            color = Color.Black;
+            scale = 1;
             rectangle.Width = texture.Width;
             rectangle.Height = texture.Height;
             position = new Vector2((World.gridSize / 2) - (rectangle.Width * scale / 2));
-            Console.WriteLine("load");
+
+            collider = new(position.X, position.Y, rectangle.Width, rectangle.Height);
         }
 
         private void CalculateMovementInput(object? sender, Input.KeyArgs e)
@@ -70,21 +71,24 @@ namespace FNA_Learning.GameStuff
         protected override void Update(object? sender, World.UpdateEventArgs e)
         {
             base.Update(sender, e);
-            time = e.deltaTime;
 
-            Movement();
+            Movement((float)e.deltaTime);
         }
 
-        private void Movement()
+        private void Movement(float deltaTime)
         {
             if (velocity.Length() == 0) return;
 
-            Vector2 movement = Vector2.Clamp(velocity, Vector2.One * -1, Vector2.One);
+            velocity = Vector2.Normalize(velocity);
 
-            base.Move(velocity);
+            Vector2 movement = velocity * speed * deltaTime;
+
+
+            base.Move(movement);
             velocity = Vector2.Zero;
-            Console.WriteLine(elapsed);
-            elapsed = 0;
+
+            collider.SetPos(position);
+
         }
     }
 }

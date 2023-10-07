@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FNA_Learning.GameStuff.Physics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -12,6 +13,7 @@ namespace FNA_Learning.GameStuff
     internal class World
     {
         internal static readonly World Instance = new World();
+        private Grid grid;
 
         #region Events
 
@@ -29,7 +31,26 @@ namespace FNA_Learning.GameStuff
             }
         }
 
-        public event EventHandler<DrawEventArgs> DrawEvent;
+        /// <summary>
+        /// Ground
+        /// </summary>
+        public event EventHandler<DrawEventArgs> DrawEvent_0;
+        /// <summary>
+        /// Ground Cover
+        /// </summary>
+        public event EventHandler<DrawEventArgs> DrawEvent_1;
+        /// <summary>
+        /// Decorations on Ground, e.g., Pots, Fallen Log
+        /// </summary>
+        public event EventHandler<DrawEventArgs> DrawEvent_2;
+        /// <summary>
+        /// Player
+        /// </summary>
+        public event EventHandler<DrawEventArgs> DrawEvent_3;
+        /// <summary>
+        /// treetops and such
+        /// </summary>
+        public event EventHandler<DrawEventArgs> DrawEvent_4;
         public class DrawEventArgs : EventArgs
         {
             public double deltaTime { get; set; }
@@ -44,22 +65,37 @@ namespace FNA_Learning.GameStuff
 
         #endregion
 
-        List<GameObject> gameObjects = new();
-
-        private const int numGrid = 10;
+        private const int numGrid = 16;
         public static int gridSize { get; private set; }
+
+        private List<ColliderCircle> colliders_circle = new();
+        private List<ColliderRect> colliders_rectangle = new();
 
         Texture2D texture_grid;
 
         internal void LoadContent()
         {
             texture_grid = FNAGame.ContentManager_.Load<Texture2D>("WhiteSquare.png");
+
             LoadContentEvent?.Invoke(this, null);
         }
 
         internal void Init()
         {
             gridSize = ((FNAGame.Height < FNAGame.Width)? FNAGame.Height : FNAGame.Width) / numGrid;
+            grid = new Grid(numGrid);
+
+            for (int y = 0; y < numGrid; y++)
+            {
+                for (int x = 0; x < numGrid; x++)
+                {
+                    WorldTile tile = new WorldTile(new Vector2(x * gridSize, y * gridSize));
+
+                    if (x == 4 && y== 4) tile.SetColor(Color.Orange);
+                }
+            }
+            colliders_rectangle.Add(new(4 * gridSize, 4 * gridSize, gridSize, gridSize));
+
             InitEvent?.Invoke(this, null);
         }
 
@@ -70,31 +106,23 @@ namespace FNA_Learning.GameStuff
 
         internal void Draw(double deltaTime, SpriteBatch batch)
         {
-            for (int y = 0; y < numGrid; y++)
-            {
-                for (int x = 0; x < numGrid; x++)
+            DrawEvent_0?.Invoke(this, new DrawEventArgs(deltaTime, batch));
+            DrawEvent_1?.Invoke(this, new DrawEventArgs(deltaTime, batch));
+            DrawEvent_2?.Invoke(this, new DrawEventArgs(deltaTime, batch));
+            DrawEvent_3?.Invoke(this, new DrawEventArgs(deltaTime, batch));
+            DrawEvent_4?.Invoke(this, new DrawEventArgs(deltaTime, batch));
+        }
+
+        public bool CheckCollision(ColliderRect other, out ColliderRect collision)
+        {
+            foreach (var collider in colliders_rectangle) if (collider.CollidesRect(other))
                 {
-                    batch.Draw(texture_grid, new Rectangle(x * gridSize, y * gridSize, gridSize - 1, gridSize - 1), Color.LightGray);
+                    collision = collider;
+                    return true;
                 }
-            }
 
-            DrawEvent?.Invoke(this, new DrawEventArgs(deltaTime, batch));
-        }
-
-        public void AddGameObject(GameObject gameObject)
-        {
-            lock (gameObjects)
-            {
-                gameObjects.Add(gameObject);
-            }
-        }
-
-        public void RemoveGameObject(GameObject gameObject)
-        {
-            lock(gameObjects)
-            {
-                gameObjects.Remove(gameObject);
-            }
+            collision = default;
+            return false;
         }
     }
 }

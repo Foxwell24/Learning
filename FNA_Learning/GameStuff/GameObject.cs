@@ -16,10 +16,10 @@ namespace FNA_Learning.GameStuff
         protected Vector2 position = new();
         protected Rectangle rectangle = new();
         protected float scale = 1f;
+        protected float rotation = 0f;
 
         public GameObject()
         {
-            World.Instance.DrawEvent += Draw;
             World.Instance.UpdateEvent += Update;
             World.Instance.InitEvent += Init;
             World.Instance.LoadContentEvent += LoadContent;
@@ -42,12 +42,16 @@ namespace FNA_Learning.GameStuff
 
         protected virtual void Draw(object? sender, World.DrawEventArgs e)
         {
-            e.spriteBatch.Draw(texture, position, rectangle, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            if (texture == null) return;
+
+            e.spriteBatch.Draw(texture, position, rectangle, color, rotation, Vector2.Zero, scale, SpriteEffects.None, 1);
         }
 
         public virtual void Move(Vector2 movement)
         {
-            position += movement * World.gridSize;
+            position += movement;
         }
+
+        public virtual void SetColor(Color color) => this.color = color;
     }
 }
