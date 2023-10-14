@@ -22,7 +22,6 @@ namespace FNA_Learning
             // following this https://github.com/FNA-XNA/FNA/wiki/2b:-FNA-From-Scratch-Tutorial#your-first-game
 
             new Input();
-            new Player();
 
             using (FNAGame game = new FNAGame())
             {

@@ -1,4 +1,4 @@
-﻿using FNA_Learning.GameStuff.Physics;
+﻿using FNA_Learning.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,117 +12,67 @@ namespace FNA_Learning.GameStuff
 {
     internal class World
     {
+        private const int GridSize = 10;
         internal static readonly World Instance = new World();
         private Grid grid;
+        private PlayerController playerController;
 
-        #region Events
-
-        public event EventHandler InitEvent;
-        public event EventHandler LoadContentEvent;
-
-        public event EventHandler<UpdateEventArgs> UpdateEvent;
-        public class UpdateEventArgs : EventArgs
-        {
-            public double deltaTime { get; set; }
-
-            public UpdateEventArgs(double deltaTime)
-            {
-                this.deltaTime = deltaTime;
-            }
-        }
-
-        /// <summary>
-        /// Ground
-        /// </summary>
-        public event EventHandler<DrawEventArgs> DrawEvent_0;
-        /// <summary>
-        /// Ground Cover
-        /// </summary>
-        public event EventHandler<DrawEventArgs> DrawEvent_1;
-        /// <summary>
-        /// Decorations on Ground, e.g., Pots, Fallen Log
-        /// </summary>
-        public event EventHandler<DrawEventArgs> DrawEvent_2;
-        /// <summary>
-        /// Player
-        /// </summary>
-        public event EventHandler<DrawEventArgs> DrawEvent_3;
-        /// <summary>
-        /// treetops and such
-        /// </summary>
-        public event EventHandler<DrawEventArgs> DrawEvent_4;
-        public class DrawEventArgs : EventArgs
-        {
-            public double deltaTime { get; set; }
-            public SpriteBatch spriteBatch { get; set; }
-
-            public DrawEventArgs(double deltaTime, SpriteBatch spriteBatch)
-            {
-                this.deltaTime = deltaTime;
-                this.spriteBatch = spriteBatch;
-            }
-        }
-
-        #endregion
-
-        private const int numGrid = 16;
-        public static int gridSize { get; private set; }
-
-        private List<ColliderCircle> colliders_circle = new();
-        private List<ColliderRect> colliders_rectangle = new();
-
-        Texture2D texture_grid;
+        GameObject Grass, Water, Player;
 
         internal void LoadContent()
         {
-            texture_grid = FNAGame.ContentManager_.Load<Texture2D>("WhiteSquare.png");
 
-            LoadContentEvent?.Invoke(this, null);
+            TextureHolder.LoadTextures();
+
+            Grass = new GameObject()
+            {
+                texture = TextureSelector.WhiteSquare,
+                color = Color.LimeGreen,
+                rectangle = grid.Tile
+            };
+
+            Water = new GameObject()
+            {
+                texture = TextureSelector.WhiteSquare,
+                color = Color.DarkBlue,
+                rectangle = grid.Tile
+            };
+
+
+            Player = new GameObject()
+            {
+                texture = TextureSelector.Player,
+                color = Color.Red,
+                rectangle = TextureHolder.GetTexture(TextureSelector.Player).Bounds,
+            };
+            playerController = new PlayerController(Player, grid);
+            grid.SetObject(0, 0, Grid.Layer.Entities, playerController.player);
+
+
+            for (int x = 0; x < GridSize; x++)
+            {
+                for (int y = 0; y < GridSize; y++)
+                {
+                    if ((x+y) % 2 == 0) grid.SetObject(x, y, Grid.Layer.Ground, Grass);
+                    else grid.SetObject(x, y, Grid.Layer.Ground, Water);
+                }
+            }
         }
 
         internal void Init()
         {
-            gridSize = ((FNAGame.Height < FNAGame.Width)? FNAGame.Height : FNAGame.Width) / numGrid;
-            grid = new Grid(numGrid);
+            grid = new Grid(GridSize);
 
-            for (int y = 0; y < numGrid; y++)
-            {
-                for (int x = 0; x < numGrid; x++)
-                {
-                    WorldTile tile = new WorldTile(new Vector2(x * gridSize, y * gridSize));
-
-                    if (x == 4 && y== 4) tile.SetColor(Color.Orange);
-                }
-            }
-            colliders_rectangle.Add(new(4 * gridSize, 4 * gridSize, gridSize, gridSize));
-
-            InitEvent?.Invoke(this, null);
         }
 
         internal void Update(double deltaTime)
         {
-            UpdateEvent?.Invoke(this, new UpdateEventArgs(deltaTime));
+            playerController.Update(deltaTime);
         }
 
         internal void Draw(double deltaTime, SpriteBatch batch)
         {
-            DrawEvent_0?.Invoke(this, new DrawEventArgs(deltaTime, batch));
-            DrawEvent_1?.Invoke(this, new DrawEventArgs(deltaTime, batch));
-            DrawEvent_2?.Invoke(this, new DrawEventArgs(deltaTime, batch));
-            DrawEvent_3?.Invoke(this, new DrawEventArgs(deltaTime, batch));
-            DrawEvent_4?.Invoke(this, new DrawEventArgs(deltaTime, batch));
-        }
-
-        public bool CheckCollision(ColliderRect other, out ColliderRect collision)
-        {
-            foreach (var collider in colliders_rectangle) if (collider.CollidesRect(other))
-                {
-                    collision = collider;
-                    return true;
-                }
-
-            collision = default;
-            return false;
+            grid.Draw(deltaTime, batch);
         }
     }
 }
