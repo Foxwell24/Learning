@@ -24,27 +24,10 @@ namespace FNA_Learning.GameStuff
 
             TextureHolder.LoadTextures();
 
-            Grass = new GameObject()
-            {
-                texture = TextureSelector.WhiteSquare,
-                color = Color.LimeGreen,
-                rectangle = grid.Tile
-            };
+            Grass = new GameObject(TextureSelector.WhiteSquare, Color.LimeGreen);
+            Water = new GameObject(TextureSelector.WhiteSquare, Color.DarkBlue);
+            Player = new GameObject(TextureSelector.Player, Color.Red);
 
-            Water = new GameObject()
-            {
-                texture = TextureSelector.WhiteSquare,
-                color = Color.DarkBlue,
-                rectangle = grid.Tile
-            };
-
-
-            Player = new GameObject()
-            {
-                texture = TextureSelector.Player,
-                color = Color.Red,
-                rectangle = TextureHolder.GetTexture(TextureSelector.Player).Bounds,
-            };
             playerController = new PlayerController(Player, grid);
             grid.SetObject(0, 0, Grid.Layer.Entities, playerController.player);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FNA_Learning.Helpers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FNA_Learning.GameStuff
 {
-    internal class Grid
+    public class Grid
     {
         GameObject?[][][] grid;
         public int tileSize {  get; private set; }
@@ -16,7 +17,9 @@ namespace FNA_Learning.GameStuff
 
         public Grid(int gridSize)
         {
-            tileSize = ((FNAGame.Height < FNAGame.Width) ? FNAGame.Height : FNAGame.Width) / gridSize; // grid size will fill the smallest aspect, width or height
+            //tileSize = ((FNAGame.Height < FNAGame.Width) ? FNAGame.Height : FNAGame.Width) / gridSize; // grid size will fill the smallest aspect, width or height
+            tileSize = 32;
+
             Tile = new Rectangle(0, 0, tileSize, tileSize);
 
             grid = new GameObject?[gridSize][][];
@@ -28,6 +31,11 @@ namespace FNA_Learning.GameStuff
                     grid[x][y] = new GameObject?[Enum.GetNames<Layer>().Length];
                 }
             }
+        }
+
+        public float GetScale(int pixelSizeOfTexture)
+        {
+            return 1f + (float)(((float)tileSize - (float)pixelSizeOfTexture) / (float)pixelSizeOfTexture);
         }
 
         public bool SetObject(int x, int y, Layer layer, GameObject? obj)
@@ -47,6 +55,7 @@ namespace FNA_Learning.GameStuff
             {
                 GameObject o = obj.Value;
                 o.position = new Vector2(x * tileSize, y * tileSize);
+                o.scale = GetScale(TextureHolder.GetTexture(o.texture).Width);
 
                 grid[x][y][(int)layer] = o;
                 return true;

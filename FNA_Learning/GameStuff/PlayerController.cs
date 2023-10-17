@@ -48,8 +48,6 @@ namespace FNA_Learning.GameStuff
                         break;
                 }
             };
-
-            this.player.offset = new Vector2(3, 3);
         }
 
         public void Update(double deltaTime)
