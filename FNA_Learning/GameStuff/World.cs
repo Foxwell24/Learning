@@ -17,7 +17,7 @@ namespace FNA_Learning.GameStuff
         private Grid grid;
         private PlayerController playerController;
 
-        GameObject Grass, Water, Player;
+        GameObject Grass, Water, Wall, Player;
 
         internal void LoadContent()
         {
@@ -26,6 +26,7 @@ namespace FNA_Learning.GameStuff
 
             Grass = new GameObject(TextureSelector.WhiteSquare, Color.LimeGreen);
             Water = new GameObject(TextureSelector.WhiteSquare, Color.DarkBlue);
+            Wall = new GameObject(TextureSelector.WhiteSquare, Color.Brown) { obsticle = true };
             Player = new GameObject(TextureSelector.Player, Color.Red);
 
             playerController = new PlayerController(Player, grid);
@@ -36,8 +37,14 @@ namespace FNA_Learning.GameStuff
             {
                 for (int y = 0; y < GridSize; y++)
                 {
-                    if ((x+y) % 2 == 0) grid.SetObject(x, y, Grid.Layer.Ground, Grass);
-                    else grid.SetObject(x, y, Grid.Layer.Ground, Water);
+                    GameObject chosen;
+
+                    if ((x + y) % 2 == 0) chosen = Grass;
+                    else chosen = Water;
+
+                    if (x == GridSize-1 || y == GridSize-1) chosen = Wall;
+
+                    grid.SetObject(x, y, Grid.Layer.Ground, chosen);
                 }
             }
         }

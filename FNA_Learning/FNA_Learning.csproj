@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="E:\Dev\FNA\FNA\FNA.Core.csproj" />
+    <ProjectReference Include="C:\Users\kaefo\OneDrive\Documents\Code\FNA\FNA.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /y /d &quot;E:\Dev\FNA\ExternalDependencies\x64\*.dll&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
+    <Exec Command="xcopy /y /d &quot;C:\Users\kaefo\OneDrive\Documents\Code\ExternalDependencies\x64\*.dll&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
 
 </Project>

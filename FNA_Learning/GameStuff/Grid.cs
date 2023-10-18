@@ -40,26 +40,32 @@ namespace FNA_Learning.GameStuff
 
         public bool SetObject(int x, int y, Layer layer, GameObject? obj)
         {
+            // Check inside bounds
             if (x < 0 ||
                 y < 0 ||
                 x >= grid.Length ||
                 y >= grid.Length)
                 return false;
 
+            // If object you are setting is null, you are removing whatever was in that position.
             if (obj == null)
             {
                 grid[x][y][(int)layer] = null;
                 return true;
             }
-            else
-            {
-                GameObject o = obj.Value;
-                o.position = new Vector2(x * tileSize, y * tileSize);
-                o.scale = GetScale(TextureHolder.GetTexture(o.texture).Width);
 
-                grid[x][y][(int)layer] = o;
-                return true;
+            // if where we are moving is an obsticle, we cant move there
+            if (GetObject(x, y, layer) != null && GetObject(x, y, layer).Value.obsticle)
+            {
+                return false;
             }
+
+            // Finally we can set the tile to the gameobject
+            grid[x][y][(int)layer] = obj.Value with
+            {
+                position = new Vector2(x * tileSize, y * tileSize)
+            };
+            return true;
         }
 
         public GameObject? GetObject(int x, int y, Layer layer)

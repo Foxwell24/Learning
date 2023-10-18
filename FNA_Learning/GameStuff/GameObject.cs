@@ -11,7 +11,7 @@ namespace FNA_Learning.GameStuff
         public Rectangle rectangle;
         public Color color;
         public Vector2 offset;
-        public float scale = 1;
+        public bool obsticle = false;
 
         public GameObject(TextureSelector texture, Color color, Vector2 offset = default) : this()
         {
@@ -25,7 +25,7 @@ namespace FNA_Learning.GameStuff
         {
             //batch.Draw(TextureHolder.GetTexture(texture), position + offset, rectangle, color);
 
-            batch.Draw(TextureHolder.GetTexture(texture), position, rectangle, color, 0f, -offset, scale, SpriteEffects.None, 0f);
+            batch.Draw(TextureHolder.GetTexture(texture), position, rectangle, color, 0f, -offset, 1, SpriteEffects.None, 0f);
         }
     }
 }
